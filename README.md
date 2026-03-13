@@ -26,6 +26,50 @@ That's it! Just double-click `index.html` to play.
 
 ---
 
+## 🚀 Despliegue en Heroku
+
+Este proyecto es web estática, pero Heroku necesita detectar un runtime para construir.
+Por eso se incluye un servidor Node mínimo (`server.js`) + `package.json` + `Procfile`.
+
+### Pasos
+
+1. Instala Heroku CLI y verifica:
+  ```bash
+  heroku --version
+  ```
+2. Inicia sesión:
+  ```bash
+  heroku login
+  ```
+3. Desde la carpeta del proyecto, crea la app:
+  ```bash
+  heroku create TU-NOMBRE-APP
+  ```
+4. (Opcional) fija buildpack de Node explícitamente:
+  ```bash
+  heroku buildpacks:set heroku/nodejs
+  ```
+5. Sube a Heroku:
+  ```bash
+  git push heroku main
+  ```
+  (si tu rama es `master`, usa `git push heroku master`)
+6. Abre la app:
+  ```bash
+  heroku open
+  ```
+
+### Si vuelve a fallar detección de buildpack
+
+- Asegúrate de que `package.json` esté en la raíz del repo.
+- Verifica que `Procfile` también esté en la raíz.
+- Revisa logs:
+  ```bash
+  heroku logs --tail
+  ```
+
+---
+
 ## 🐍 Python Desktop Version
 
 An interactive labyrinth game built with Python and Pygame where players navigate through a maze and interact with stations that present questions.

@@ -1,0 +1,350 @@
+html, body {
+    height: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(180deg, #6f9550 0%, #5f7f43 100%);
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.container {
+    background: #f4efe2;
+    border-radius: 18px;
+    padding: 12px 14px 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    max-width: 1040px;
+    width: min(1040px, 100%);
+    height: min(calc(100dvh - 20px), 930px);
+    border: 2px solid rgba(120, 95, 61, 0.22);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+h1 {
+    text-align: center;
+    color: #2f3d2d;
+    margin-bottom: 0;
+    line-height: 1;
+    font-size: clamp(1.7rem, 4vw, 2.8rem);
+}
+
+.subtitle {
+    text-align: center;
+    color: #6d6a52;
+    font-weight: 600;
+    margin-bottom: 0;
+    font-size: clamp(0.88rem, 1.7vw, 1.08rem);
+}
+
+.info {
+    text-align: center;
+    color: #5f5a49;
+    background: #f7f1e3;
+    border: 1px solid #deceb2;
+    border-radius: 12px;
+    padding: 8px 10px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) auto minmax(0, 1.4fr);
+    gap: 8px;
+    align-items: center;
+}
+
+.info p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+#status {
+    font-weight: bold;
+    color: #597038;
+    white-space: nowrap;
+}
+
+#nearbyPrompt {
+    min-height: 0;
+    color: #6a5436;
+    font-weight: 600;
+    font-size: 0.94rem;
+}
+
+.game-shell {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#gameCanvas {
+    display: block;
+    border: 5px solid #735232;
+    border-radius: 6px;
+    background: #d8e6c1;
+    cursor: crosshair;
+    width: min(100%, calc((100dvh - 205px) * 1.42857));
+    max-width: 100%;
+    max-height: calc(100dvh - 205px);
+    height: auto;
+    margin-top: 0;
+    box-shadow: inset 0 0 0 3px rgba(249, 240, 219, 0.55);
+}
+
+.dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.dialog.hidden {
+    display: none;
+}
+
+.dialog-content {
+    background: #fffaf0;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-width: 720px;
+    width: 90%;
+    animation: slideIn 0.3s ease-out;
+    border: 3px solid #8a6a43;
+    max-height: 84vh;
+    overflow-y: auto;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.dialog-content h2 {
+    color: #3a3124;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.dialog-content p {
+    color: #5d5648;
+    margin-bottom: 20px;
+    font-size: 1.15em;
+    line-height: 1.5;
+}
+
+.response-body {
+    color: #5d5648;
+    margin-bottom: 20px;
+    font-size: 1.08em;
+    line-height: 1.55;
+}
+
+.response-body ul {
+    margin-left: 20px;
+}
+
+.response-body li {
+    margin-bottom: 8px;
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.btn-primary, .btn-secondary {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-weight: 700;
+}
+
+.mobile-controls {
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 48px);
+    gap: 8px;
+    width: min(320px, 100%);
+}
+
+.control-btn {
+    border: 2px solid #7a5b38;
+    background: #fff4dc;
+    color: #47331b;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    touch-action: manipulation;
+}
+
+.control-btn:active {
+    transform: scale(0.97);
+}
+
+.control-btn.up { grid-column: 2; grid-row: 1; }
+.control-btn.left { grid-column: 1; grid-row: 2; }
+.control-btn.action { grid-column: 2; grid-row: 2; font-size: 0.95rem; }
+.control-btn.right { grid-column: 3; grid-row: 2; }
+.control-btn.down { grid-column: 2; grid-row: 3; }
+
+.btn-primary {
+    background: #627943;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #52673a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(82, 103, 58, 0.35);
+}
+
+.btn-secondary {
+    background: #e8ddc8;
+    color: #4e4332;
+}
+
+.btn-secondary:hover {
+    background: #dccfb8;
+    transform: translateY(-2px);
+}
+
+.feedback {
+    font-weight: bold;
+    text-align: center;
+    min-height: 20px;
+}
+
+.feedback.correct {
+    color: #4caf50;
+}
+
+.feedback.incorrect {
+    color: #f44336;
+}
+
+.dialog-content ul {
+    margin: 0 0 20px 20px;
+    color: #5d5648;
+    line-height: 1.5;
+}
+
+@media (max-width: 800px) {
+    body {
+        align-items: flex-start;
+        padding: 8px;
+        overflow: auto;
+    }
+
+    .container {
+        border-radius: 12px;
+        padding: 10px;
+        height: auto;
+        min-height: calc(100dvh - 16px);
+        gap: 10px;
+    }
+
+    .info {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 10px;
+        gap: 6px;
+    }
+
+    .info p {
+        font-size: 0.92rem;
+    }
+
+    #nearbyPrompt {
+        font-size: 0.92rem;
+    }
+
+    .game-shell {
+        justify-content: flex-start;
+    }
+
+    #gameCanvas {
+        width: 100%;
+        max-height: none;
+    }
+
+    .dialog-content {
+        padding: 18px;
+        width: 94%;
+        max-height: 88dvh;
+    }
+
+    .dialog-buttons {
+        flex-direction: column;
+    }
+
+    .mobile-controls {
+        display: grid;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 6px;
+    }
+
+    .container {
+        padding: 8px;
+        border-radius: 10px;
+    }
+
+    h1 {
+        font-size: 1.55rem;
+    }
+
+    .subtitle {
+        font-size: 0.84rem;
+    }
+
+    .control-btn {
+        font-size: 1rem;
+    }
+
+    .control-btn.action {
+        font-size: 0.82rem;
+    }
+
+    .dialog-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .dialog-content p,
+    .response-body {
+        font-size: 1rem;
+    }
+}

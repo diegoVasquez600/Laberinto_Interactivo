@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruta del Diseño - Problemas Perversos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Ruta del Diseño</h1>
+        <p class="subtitle">Explora decisiones en problemas perversos</p>
+        <div class="info">
+            <p>Usa WASD o flechas para moverte | Presiona ESPACIO para abrir un cuadro</p>
+            <p id="status">Cuadros visitados: <span id="completed">0</span> / <span id="total">11</span></p>
+            <p id="nearbyPrompt">Acércate a un cuadro para ver su pregunta.</p>
+        </div>
+        <div class="game-shell">
+            <canvas id="gameCanvas" width="1000" height="700"></canvas>
+
+            <div id="mobileControls" class="mobile-controls" aria-label="Controles táctiles">
+                <button class="control-btn up" data-key="arrowup">▲</button>
+                <button class="control-btn left" data-key="arrowleft">◀</button>
+                <button class="control-btn action" data-key="space">ESPACIO</button>
+                <button class="control-btn right" data-key="arrowright">▶</button>
+                <button class="control-btn down" data-key="arrowdown">▼</button>
+            </div>
+        </div>
+        
+        <!-- Question Dialog -->
+        <div id="questionDialog" class="dialog hidden">
+            <div class="dialog-content">
+                <h2 id="questionTitle">Cuadro</h2>
+                <p id="questionText"></p>
+                <div class="dialog-buttons">
+                    <button id="openResponseBtn" class="btn-primary">Abrir respuesta</button>
+                    <button id="closeQuestionBtn" class="btn-secondary">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Response Dialog -->
+        <div id="responseDialog" class="dialog hidden">
+            <div class="dialog-content">
+                <h2>Respuesta</h2>
+                <div id="responseText" class="response-body"></div>
+                <div class="dialog-buttons">
+                    <button id="markReadBtn" class="btn-primary">Entendido</button>
+                    <button id="closeResponseBtn" class="btn-secondary">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Win Dialog -->
+        <div id="winDialog" class="dialog hidden">
+            <div class="dialog-content">
+                <h2>🎉 ¡FELICIDADES!</h2>
+                <p>Recorriste todos los cuadros del laberinto.</p>
+                <button id="restartBtn" class="btn-primary">Reiniciar recorrido</button>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

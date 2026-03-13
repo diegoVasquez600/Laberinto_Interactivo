@@ -4,7 +4,7 @@ const CONFIG = {
     HEIGHT: 700,
     FPS: 60,
     PLAYER_SIZE: 26,
-    PLAYER_SPEED: 4,
+    PLAYER_SPEED: 3.1,
     STATION_SIZE: 28,
     WALL: 10
 };
@@ -166,7 +166,12 @@ class Game {
     setupEventListeners() {
         // Keyboard controls
         document.addEventListener('keydown', (e) => {
-            this.keys[e.key.toLowerCase()] = true;
+            const key = e.key.toLowerCase();
+            this.keys[key] = true;
+
+            if (['arrowleft', 'arrowright', 'arrowup', 'arrowdown', ' ', 'spacebar'].includes(key)) {
+                e.preventDefault();
+            }
             
             if (e.key === ' ' || e.key === 'Spacebar') {
                 e.preventDefault();
@@ -184,6 +189,10 @@ class Game {
         
         document.addEventListener('keyup', (e) => {
             this.keys[e.key.toLowerCase()] = false;
+        });
+
+        window.addEventListener('blur', () => {
+            this.keys = {};
         });
         
         // Button listeners
@@ -405,12 +414,22 @@ class Game {
     
     update() {
         if (document.getElementById('questionDialog').classList.contains('hidden') && document.getElementById('responseDialog').classList.contains('hidden')) {
-            let dx = 0, dy = 0;
+            let inputX = 0;
+            let inputY = 0;
             
-            if (this.keys['arrowleft'] || this.keys['a']) dx -= CONFIG.PLAYER_SPEED;
-            if (this.keys['arrowright'] || this.keys['d']) dx += CONFIG.PLAYER_SPEED;
-            if (this.keys['arrowup'] || this.keys['w']) dy -= CONFIG.PLAYER_SPEED;
-            if (this.keys['arrowdown'] || this.keys['s']) dy += CONFIG.PLAYER_SPEED;
+            if (this.keys['arrowleft'] || this.keys['a']) inputX -= 1;
+            if (this.keys['arrowright'] || this.keys['d']) inputX += 1;
+            if (this.keys['arrowup'] || this.keys['w']) inputY -= 1;
+            if (this.keys['arrowdown'] || this.keys['s']) inputY += 1;
+
+            let dx = 0;
+            let dy = 0;
+
+            if (inputX !== 0 || inputY !== 0) {
+                const magnitude = Math.hypot(inputX, inputY);
+                dx = (inputX / magnitude) * CONFIG.PLAYER_SPEED;
+                dy = (inputY / magnitude) * CONFIG.PLAYER_SPEED;
+            }
             
             this.player.move(dx, dy, this.walls);
         }
@@ -537,27 +556,35 @@ class Player {
     }
     
     move(dx, dy, walls) {
-        const nextX = this.x + dx;
-        const nextY = this.y + dy;
+        const steps = Math.max(1, Math.ceil(Math.max(Math.abs(dx), Math.abs(dy))));
+        const stepX = dx / steps;
+        const stepY = dy / steps;
 
-        const withinBoundsX = nextX >= 0 && nextX + this.size <= CONFIG.WIDTH;
-        const withinBoundsY = nextY >= 0 && nextY + this.size <= CONFIG.HEIGHT;
-
-        if (withinBoundsX) {
-            const rectX = { x: nextX, y: this.y, w: this.size, h: this.size };
-            const blockedX = walls.some(wall => this.checkRectCollision(rectX, wall));
-            if (!blockedX) {
+        for (let step = 0; step < steps; step++) {
+            const nextX = this.x + stepX;
+            if (this.canMoveTo(nextX, this.y, walls)) {
                 this.x = nextX;
             }
-        }
 
-        if (withinBoundsY) {
-            const rectY = { x: this.x, y: nextY, w: this.size, h: this.size };
-            const blockedY = walls.some(wall => this.checkRectCollision(rectY, wall));
-            if (!blockedY) {
+            const nextY = this.y + stepY;
+            if (this.canMoveTo(this.x, nextY, walls)) {
                 this.y = nextY;
             }
         }
+    }
+
+    canMoveTo(nextX, nextY, walls) {
+        const withinBounds = nextX >= 0 &&
+            nextY >= 0 &&
+            nextX + this.size <= CONFIG.WIDTH &&
+            nextY + this.size <= CONFIG.HEIGHT;
+
+        if (!withinBounds) {
+            return false;
+        }
+
+        const rect = { x: nextX, y: nextY, w: this.size, h: this.size };
+        return !walls.some(wall => this.checkRectCollision(rect, wall));
     }
     
     checkRectCollision(rect1, rect2) {
